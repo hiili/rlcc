@@ -83,12 +83,13 @@ end
 
 % configure
 
+trainer = Trainer();
 
 % basic trainer configuration
-tp.seed = p.seed;
-tp.logLevel = p.logLevel;
-tp.environment = p.environment;
-tp.agent = p.agent;
+trainer.seed = p.seed;
+trainer.logLevel = p.logLevel;
+trainer.environment = p.environment;
+trainer.agent = p.agent;
 
 % prepare stopping conditions struct
 stopConds.train.maxSteps = p.trainMaxSteps;
@@ -98,22 +99,19 @@ stopConds.test.totalRewardRange = [-Inf, Inf];
 if ~isempty( p.stopConds ); stopConds = p.stopConds; end
 
 % configure training
-tp.trainingParams.iterations = p.iterations;
-tp.trainingParams.evaluationParams.iterations = p.episodesIt;
-tp.trainingParams.evaluationParams.episodeStoppingConditions = stopConds.train;
+trainer.training.iterations = p.iterations;
+trainer.training.evaluation.iterations = p.episodesIt;
+trainer.training.evaluation.episodeStoppingConditions = stopConds.train;
 
 % configure during-training testing
-tp.trainingTestParams.iterations = p.iterations;
-tp.trainingTestParams.evaluationParams.iterations = p.trainTestEpisodes;
-tp.trainingTestParams.evaluationParams.episodeStoppingConditions = stopConds.test;
+trainer.trainingTest.iterations = p.iterations;
+trainer.trainingTest.evaluation.iterations = p.trainTestEpisodes;
+trainer.trainingTest.evaluation.episodeStoppingConditions = stopConds.test;
 
 % configure testing
-tp.testingParams.iterations = p.testEpisodes;
-tp.testingParams.episodeStoppingConditions = stopConds.test;
+trainer.testing.iterations = p.testEpisodes;
+trainer.testing.episodeStoppingConditions = stopConds.test;
 
-
-% create the trainer
-trainer = Trainer( tp );
 
 % add state visitation distribution logging if the environment supports it
 if ~isempty( fieldnames(p.environment.getStats()) )
