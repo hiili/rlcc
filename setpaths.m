@@ -47,8 +47,6 @@ paths{end+1} = [pathPrefix '/test/manual_tests'];
 paths{end+1} = [pathPrefix '/experiments'];
 paths{end+1} = [pathPrefix '/data'];
 
-paths{end+1} = [pathPrefix '/devel'];
-
 paths{end+1} = [pathPrefix '/external'];
 paths{end+1} = [pathPrefix '/external/MatlabGraph'];
 paths{end+1} = [pathPrefix '/external/DrawDot'];
