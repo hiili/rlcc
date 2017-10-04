@@ -319,6 +319,8 @@ classdef Tests < PersistentSingleton
           % check the error
           if testArray{i}.errorMatrix(currentResultInd, referenceResultInd) == 0
             fprintf('PASS');
+          elseif testArray{i}.errorMatrix(currentResultInd, referenceResultInd) == eps
+            fprintf('PARTIAL PASS');
           else
             fprintf('FAIL');
           end
