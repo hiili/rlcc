@@ -1,0 +1,3 @@
+Fix that scaling after exporting from Lucidchart; inside the svg tag:
+  - width="925.98" height="415.75"
+  + viewBox="0 0 925.98 415.75" preserveAspectRatio="xMinYMin meet"
