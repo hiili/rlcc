@@ -1,0 +1,64 @@
+--- matlab2tikz/src/matlab2tikz.m.orig	2012-11-26 17:41:01.853448881 +0200
++++ matlab2tikz/src/matlab2tikz.m	2012-11-26 18:21:53.069691690 +0200
+@@ -2208,6 +2208,7 @@
+     dx = get(handle,'XData');
+     dy = get(handle,'YData');
+     dz = get(handle,'ZData');
++    dc = get(handle,'CData');
+     if any(~isfinite(dx(:))) || any(~isfinite(dy(:))) || any(~isfinite(dz(:)))
+         m2t.axesContainers{end}.options{end+1} = 'unbounded coords=jump';
+     end
+@@ -2217,7 +2218,7 @@
+     % algorithm.
+     % Spectrograms need to have the grid removed,
+     % m2t.axesContainers{end}.options{end+1} = 'grid=none';
+-    dz = dz';
++    dz = dz'; dc = dc';
+     if isvector(dx)
+         % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         for i = 1:row
+@@ -2232,7 +2233,7 @@
+     else
+         % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         for i = 1:row
+-            str_data = sprintf('%s', num2str([dx(:,i) dy(:,i) dz(i,:)'],'(%.15g,%.15g,%.15g)')');
++            str_data = sprintf('%s', num2str([dx(:,i) dy(:,i) dz(i,:)' dc(i,:)'],'(%.15g,%.15g,%.15g)[%.15g]')');
+             % Remove the white space.
+             str_data = str_data(~isspace(str_data));
+             str = [str, str_data];
+@@ -2403,6 +2404,7 @@
+ 
+   faceColor = get( handle, 'FaceColor');
+   edgeColor = get( handle, 'EdgeColor');
++  clim = caxis;
+ 
+   % Check for surf or mesh plot. Second argument in if-check corresponds to
+   % default values for mesh plot in MATLAB.
+@@ -2424,11 +2426,17 @@
+   % Get color map.
+   surfOptions{end+1} = matlab2pgfplotsColormap(m2t, m2t.currentHandles.colormap);
+ 
++  % use explicit color data, set color range
++  surfOptions{end+1} = 'point meta=explicit';
++  surfOptions{end+1} = 'point meta rel=per plot';
++  surfOptions{end+1} = sprintf('point meta min=%.15g', clim(1));
++  surfOptions{end+1} = sprintf('point meta max=%.15g', clim(2));
++
+   % TODO Revisit this selection and create a bunch of test plots.
+   if strcmpi(plotType, 'surf')
+       % Set shader for surface plot.
+       if strcmpi( edgeColor, 'none' ) && strcmpi( faceColor, 'flat' )
+-          surfOptions{end+1} = 'shader=flat';
++          surfOptions{end+1} = 'shader=flat corner';
+       elseif isnumeric(edgeColor) && strcmpi(faceColor, 'flat')
+           [ m2t, xEdgeColor ] = getColor( m2t, handle, edgeColor, 'patch' );
+           % same as shader=flat,draw=\pgfkeysvalueof{/pgfplots/faceted color}
+@@ -2440,7 +2448,7 @@
+           surfOptions{end+1} = 'shader=faceted interp';
+       end
+   elseif strcmpi(plotType, 'mesh')
+-      surfOptions{end+1} = 'shader=flat';
++      surfOptions{end+1} = 'shader=flat';   % should this be 'flat corner'?
+   end
+ 
+   surfOpts = join( surfOptions , ',\n' );

@@ -1,0 +1,16 @@
+r266
+----
+
+Tests were run with r266 but they were associated with the incorrect revision number 265.
+
+
+r267
+----
+
+Set as the reference revision for: TestTetrisNacLstd, TestTetrisNacLspe, TestTetrisNacLspeAvoidTerm
+
+There are differences in tests TestTetrisNacLstd, TestTetrisNacLspe, and TestTetrisNacLspeAvoidTerm.
+
+Differences are likely to be caused by some difference on numerical level; training proceeds almost identically
+while there are differences in test episode returns, in condition numbers and in critic parameters. It seems
+that the A and b matrices and vectors have become scaled by exactly 10. The reason is not clear.

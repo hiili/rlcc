@@ -1,0 +1,52 @@
+--- DrawDot_orig/drawDot.m	2009-07-15 16:16:37.000000000 +0300
++++ DrawDot/drawDot.m	2012-11-20 11:00:05.810628054 +0200
+@@ -86,6 +86,8 @@
+ % conversely, that N is a child of M.
+ 
+ function [textObj,patchObj,nodeNames,adjacent]=drawDot(dotFile,surface,varargin)
++global DrawDot_circleResolution;
++DrawDot_circleResolution = 0.05;
+ arrow('clear');
+ if numel(varargin)==1 && iscell(varargin{1})
+     varargin=varargin{1};
+@@ -113,6 +115,8 @@
+             if edgeResolution <10 
+                 edgeResolution=10;
+             end
++        case 'circleresolution'
++            DrawDot_circleResolution=varargin{i+1};
+         case 'fullmode'
+             fullMode=varargin{i+1};
+     end
+@@ -614,6 +618,7 @@
+ % patchHandle is the handle to the patch drawn,
+ % shapeExtent is the bouding box of the shape.
+ function [patchHandle]=drawNode(style,x,y,width,height,edgeColour,bgColour,property,value)
++global DrawDot_circleResolution;
+ isInverted=false;
+ extraOutlines=0;
+ if strmatch('inv', style)
+@@ -644,12 +649,12 @@
+         patchX=[0,0.5,0,-0.5,-0.3,-0.2,0.2,0.3,0.3,0.2,-0.2,-0.3,-0.3];
+         patchY=[0.5,0,-0.5,0,0.2,0.3,0.3,0.2,-0.2,-0.3,-0.3,-0.2,0.2];
+     case {'circle' 'ellipse'}
+-        patchX=-1:0.05:1;
++        patchX=-1:DrawDot_circleResolution:1;
+         patchY=[sqrt(1-patchX.^2) -sqrt(1-patchX.^2)];
+         patchX=[patchX fliplr(patchX)];
+         patchX=patchX.*0.5; patchY=patchY.*0.5;
+     case 'mcircle'
+-        patchX=-1:0.05:1;
++        patchX=-1:DrawDot_circleResolution:1;
+         patchY=[sqrt(1-patchX.^2) -sqrt(1-patchX.^2)];
+         patchY=repmat(patchY,2,1);
+         patchX=repmat(patchX,2,1);
+@@ -659,7 +664,7 @@
+         patchX=patchX.*0.5; patchY=patchY.*0.5;
+         patchX=patchX'; patchY=patchY';
+     case 'point'
+-        patchX=-1:0.05:1;
++        patchX=-1:DrawDot_circleResolution:1;
+         patchY=[sqrt(1-patchX.^2) -sqrt(1-patchX.^2)];
+         patchX=[patchX fliplr(patchX)];
+         patchX=patchX.*0.5; patchY=patchY.*0.5;
